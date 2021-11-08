@@ -1,0 +1,52 @@
+package rules
+
+dialect "mvel"
+
+import ca.uqam.model.*
+
+rule "Disponible" salience 10
+    when
+        kioskObject: Kiosk(isKioskAvailable(kioskObject));
+    then
+        System.out.println("Kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType() + " is available");
+    end
+
+rule "Indisponible" salience 10
+    when
+        kioskObject: Kiosk(!isKioskAvailable(kioskObject));
+    then
+        System.out.println("Kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType() + " is unavailable");
+    end
+
+rule "Bourrage" salience 10
+     when
+        kioskObject: Kiosk(isPaperJam());
+        technicianObject: Technician();
+     then
+        System.out.println("There is a paper jam at kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType());
+        technicianObject.solveJam(kioskObject);
+        update(kioskObject)
+        System.out.println("Technician " + technicianObject.getNumAgent() + " solved paper jam at kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType());
+    end
+
+rule "PapierFini" salience 10
+     when
+        kioskObject: Kiosk(isPaperEmpty(kioskObject));
+        representativeObject: Representative();
+     then
+        System.out.println("There is a no paper at kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType());
+        representativeObject.fillPaper(kioskObject);
+        update(kioskObject)
+        System.out.println("Representative " + representativeObject.getNumAgent() + " filled paper at kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType());
+    end
+
+rule "PapierFaible"
+    when
+        kioskObject: Kiosk(isPaperLow(kioskObject));
+        representativeObject: Representative();
+    then
+        System.out.println("Paper is low at kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType());
+        representativeObject.fillPaper(kioskObject);
+        update(kioskObject);
+        System.out.println("Representative " + representativeObject.getNumAgent() + " filled paper at kiosk " + kioskObject.getKioskNumber() + " " + kioskObject.getKioskType());
+    end
