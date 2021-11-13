@@ -13,5 +13,5 @@ the kiosk to be available again.
 * When the level of paper is low in a kiosk, the kiosk is available but representative must fill the 
 paper.
 
-To run the application, first create your kiosks and employees objects in the TestDrools.java then compile the code
+To run the application, first create your kiosks and employees objects in the DroolsTest.java then compile the code
 
